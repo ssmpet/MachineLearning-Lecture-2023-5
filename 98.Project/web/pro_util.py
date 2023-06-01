@@ -80,7 +80,7 @@ def propose(find_songId, app):
 
     # 곡 정보 추가
     ###############################################
-    self_song = df[df.songId == find_songId][['title', 'artist', 'album', 'date', 'img', 'ly_summary']].to_dict('records')[0]
+    self_song = df[df.songId == find_songId][['title', 'artist', 'album', 'date', 'genre', 'img', 'ly_summary']].to_dict('records')[0]
     
 
     # 2. index 매칭
