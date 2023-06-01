@@ -25,55 +25,69 @@
                 <div class="col-2"></div>
                 <div class="col-10">
                     <div class="mt-5">
-                        <h2>취향에 맞는 선곡!</h2>
+                        <h2>곡정보</h2>
                     </div>
                     <table class="mt-3">
                         <tr>
-                            <td class="text-center"><img src="https://cdnimg.melon.co.kr/cm/album/images/000/28/985/28985_500.jpg/melon/resize/282/quality/80/optimize" height="160"></td>
-                            <td class="text-center"><img src="https://cdnimg.melon.co.kr/cm2/album/images/110/48/906/11048906_20220906180454_500.jpg?d530d42b8ca05e5fe8c89007570a3d26/melon/resize/282/quality/80/optimize" height="160"></td>
-                            <td class="text-center"><img src="https://cdnimg.melon.co.kr/cm/album/images/003/11/401/311401_500.jpg/melon/resize/282/quality/80/optimize" height="160"></td>
-                            <td class="text-center"><img src="https://cdnimg.melon.co.kr/cm2/album/images/110/48/906/11048906_20220906180454_500.jpg?d530d42b8ca05e5fe8c89007570a3d26/melon/resize/282/quality/80/optimize" height="160"></td>
-                            <td class="text-center"><img src="https://cdnimg.melon.co.kr/cm2/album/images/110/78/402/11078402_20221014143446_500.jpg?0804744f4d981d946bae2d54db3daa4c/melon/resize/282/quality/80/optimize" height="160"></td>
+                            <td rowspan="5"><img src="{{ self_song.img}}" alt="" height="300"></td>
                         </tr>
                         <tr>
-                            <td class="text-center">희재</td>
-                            <td class="text-center">인생은 뷰티풀</td>
-                            <td class="text-center">서쪽하늘</td>
-                            <td class="text-center">슬픈등</td>
-                            <td class="text-center">고백 (영화 '동감' X 츄 (이달의 소녀))</td>
+                            <td>{{ self_song.title }}</td>
                         </tr>
                         <tr>
-                            <td class="text-center">성시경</td>
-                            <td class="text-center">김호중</td>
-                            <td class="text-center">이승철</td>
-                            <td class="text-center">김호중</td>
-                            <td class="text-center">츄(Chuu)</td>
+                            <td>{{ self_song.artist }}</td>
                         </tr>
+                        <tr>
+                            <td>{{ self_song.album }}</td>
+                        </tr>
+                            <td>{{ self_song.date[:4]}}.{{self_song.date[4:6]}}.{{self_song.date[6:]}}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"> {{ self_song.ly_summary | safe() }}</td>
+                        </tr>
+                    </table>
+
+                    <div class="mt-5">
+                        <h2>취향에 맞는 선곡!</h2>
+                    </div>
+                    <table class="mt-3">
+                        
+                        <tr>
+                            {% for content in pro_contents %}
+                            <td class="text-center"><img src="{{ content.img }}" height="160"></td>
+                            {% endfor %}
+                        </tr>
+                        
+                        <tr>
+                            {% for content in pro_contents %}
+                            <td class="text-center"> {{ content.title}}</td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for content in pro_contents %}
+                            <td class="text-center">{{ content.artist}}</td>
+                            {% endfor %}
+                        </tr>
+                        
                     </table>
                     <div class="mt-5">
                         <h2>숨은 명곡 추천!</h2>
                     </div>
                     <table class="mt-3">
                         <tr>
-                            <td class="text-center"><img src="https://cdnimg.melon.co.kr/cm/album/images/000/28/985/28985_500.jpg/melon/resize/282/quality/80/optimize" height="160"></td>
-                            <td class="text-center"><img src="https://cdnimg.melon.co.kr/cm2/album/images/110/48/906/11048906_20220906180454_500.jpg?d530d42b8ca05e5fe8c89007570a3d26/melon/resize/282/quality/80/optimize" height="160"></td>
-                            <td class="text-center"><img src="https://cdnimg.melon.co.kr/cm/album/images/003/11/401/311401_500.jpg/melon/resize/282/quality/80/optimize" height="160"></td>
-                            <td class="text-center"><img src="https://cdnimg.melon.co.kr/cm2/album/images/110/48/906/11048906_20220906180454_500.jpg?d530d42b8ca05e5fe8c89007570a3d26/melon/resize/282/quality/80/optimize" height="160"></td>
-                            <td class="text-center"><img src="https://cdnimg.melon.co.kr/cm2/album/images/110/78/402/11078402_20221014143446_500.jpg?0804744f4d981d946bae2d54db3daa4c/melon/resize/282/quality/80/optimize" height="160"></td>
+                            {% for meong in pro_meong %}
+                            <td class="text-center"><img src="{{ meong.img }}" height="160"></td>
+                            {% endfor %}
                         </tr>
                         <tr>
-                            <td class="text-center">희재</td>
-                            <td class="text-center">인생은 뷰티풀</td>
-                            <td class="text-center">서쪽하늘</td>
-                            <td class="text-center">슬픈등</td>
-                            <td class="text-center">고백 (영화 '동감' X 츄 (이달의 소녀))</td>
+                            {% for meong in pro_meong %}
+                            <td class="text-center">{{ meong.title }}</td>
+                            {% endfor %}
                         </tr>
                         <tr>
-                            <td class="text-center">성시경</td>
-                            <td class="text-center">김호중</td>
-                            <td class="text-center">이승철</td>
-                            <td class="text-center">김호중</td>
-                            <td class="text-center">츄(Chuu)</td>
+                            {% for meong in pro_meong %}
+                            <td class="text-center">{{ meong.artist }}</td>
+                            {% endfor %}
                         </tr>
                     </table>
                     <div class="mt-5">
@@ -81,29 +95,24 @@
                     </div>
                     <table class="mt-3">
                         <tr>
-                            <td class="text-center"><img src="https://cdnimg.melon.co.kr/cm/album/images/000/28/985/28985_500.jpg/melon/resize/282/quality/80/optimize" height="160"></td>
-                            <td class="text-center"><img src="https://cdnimg.melon.co.kr/cm2/album/images/110/48/906/11048906_20220906180454_500.jpg?d530d42b8ca05e5fe8c89007570a3d26/melon/resize/282/quality/80/optimize" height="160"></td>
-                            <td class="text-center"><img src="https://cdnimg.melon.co.kr/cm/album/images/003/11/401/311401_500.jpg/melon/resize/282/quality/80/optimize" height="160"></td>
-                            <td class="text-center"><img src="https://cdnimg.melon.co.kr/cm2/album/images/110/48/906/11048906_20220906180454_500.jpg?d530d42b8ca05e5fe8c89007570a3d26/melon/resize/282/quality/80/optimize" height="160"></td>
-                            <td class="text-center"><img src="https://cdnimg.melon.co.kr/cm2/album/images/110/78/402/11078402_20221014143446_500.jpg?0804744f4d981d946bae2d54db3daa4c/melon/resize/282/quality/80/optimize" height="160"></td>
+                            {% for psong in pro_psongs %}
+                            <td class="text-center"><img src="{{ psong.img }}" height="160"></td>
+                           
+                            {% endfor %}
                         </tr>
                         <tr>
-                            <td class="text-center">희재</td>
-                            <td class="text-center">인생은 뷰티풀</td>
-                            <td class="text-center">서쪽하늘</td>
-                            <td class="text-center">슬픈등</td>
-                            <td class="text-center">고백 (영화 '동감' X 츄 (이달의 소녀))</td>
+                            {% for psong in pro_psongs %}
+                            <td class="text-center">{{ psong.title }}</td>
+                            {% endfor %}
                         </tr>
                         <tr>
-                            <td class="text-center">성시경</td>
-                            <td class="text-center">김호중</td>
-                            <td class="text-center">이승철</td>
-                            <td class="text-center">김호중</td>
-                            <td class="text-center">츄(Chuu)</td>
+                            {% for psong in pro_psongs %}
+                            <td class="text-center">{{ psong.artist }}</td>
+                            {% endfor %}
                         </tr>
                     </table>
                     <div class="mt-5">
-                        <h2>플레이리스트 - 발라드, OST 그리고 가요</h2>
+                        <h2> {{ pro_tags }}</h2>
                     </div>
                     <div class="row mt-5">
                         <div class="col-4">
