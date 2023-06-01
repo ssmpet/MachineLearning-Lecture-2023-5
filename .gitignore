@@ -4,6 +4,7 @@ kakaoapikey.txt
 password.txt
 test.txt
 test.*
+*.sim
 
 test.html
 test.js
