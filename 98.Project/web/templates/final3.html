@@ -13,11 +13,71 @@
             a { text-decoration: none; }
             .playlist tr { border-bottom: 1px solid black; }
             .playlist td { padding: 0 10px; }
-
-            
         </style>
+        <style>
+            @keyframes fadeInDown {
+               0% {
+                   opacity: 0;
+                   transform: translate3d(0, -100%, 0);
+               }
+               to {
+                   opacity: 1;
+                   transform: translateZ(0);
+               }
+           }
+       
+           .div-block-10, .div-block-9 {
+               position: relative;
+               animation: fadeInDown 2s;
+           }
+   
+           body {
+               background-image: url('img/그림31.png');
+           }
+           .service-section {
+               height: auto;
+               /* background-color: #fff; */
+               background-position: 0 0;
+               background-size: auto;
+               margin: 0 auto;
+               padding-top: 100px;
+               padding-bottom: 410px;
+               display: block;
+           }
+           
+           .div-block-10 {
+               margin-left: 400px;
+           }
+   
+           .div-block-8 {
+               text-align: center;
+               padding-left: 60px;
+               display: inline-block;
+           }
+           
+           .div-block-9 {
+               text-align: center;
+               margin-top: 60px;
+               margin-bottom: 60px;
+           }
+           
+           .image-4 {
+               margin-bottom: 20px;
+               display: inline-block;
+           }
+   
+           .heading-2 {
+               color: #7e93eb;
+               text-align: center;
+               margin-left: 15px;
+               font-size: 40px;
+               display: inline-block;
+               overflow: visible;
+               font-weight: 900;
+           }
+       </style>
     </head>
-    <body >
+    <body>
         <div class="container-fluid p-3 bg-warning text-white text-center mt-5">
             <h1>Want listen to it?</h1>
             <p>test</p>
@@ -50,70 +110,50 @@
                         </tr>
                     </table>
 
-                    <div class="mt-5">
-                        <h2>취향에 맞는 노래를 찾아왔어요!</h2>
-                    </div>
-                    <table class="mt-3">
-                        
-                        <tr>
-                            {% for content in pro_contents %}
-                            <td class="text-center"><img src="{{ content.img }}" height="160"></td>
+                    <div class="service-section">
+                        <div class="div-block-10">
+                            <img src="{{url_for('static', filename='img/그림16.png')}}" width="30" alt="" class="image-4" />
+                            <h2 class="heading-2">취향에 맞는 노래를 찾아왔어요!</h2>
+                        </div>
+                        <div class="div-block-9">
+                            {% for pro_content in pro_contents %}
+                            <div class="div-block-8">
+                                <img src="{{pro_content.img}}"  width="160" alt="" />
+                                <div style="margin: 10px;"><strong>{{pro_content.title}}</strong></div>
+                                <div>{{pro_content.artist}}</div>
+                            </div>
                             {% endfor %}
-                        </tr>
-                        
-                        <tr>
-                            {% for content in pro_contents %}
-                            <td class="text-center"> {{ content.title}}</td>
-                            {% endfor %}
-                        </tr>
-                        <tr>
-                            {% for content in pro_contents %}
-                            <td class="text-center">{{ content.artist}}</td>
-                            {% endfor %}
-                        </tr>
-                        
-                    </table>
-                    <div class="mt-5">
-                        <h2>잘 알려지지 않았지만, 검색한 노래와 비슷한 노래에요!</h2>
-                    </div>
-                    <table class="mt-3">
-                        <tr>
+                        </div>
+                        <div class="div-block-10"><img
+                                src="./img/그림16.png"
+                                 width="30" alt="" class="image-4" />
+                            <h2 class="heading-2">잘 알려지지 않았지만, 검색한 노래와 비슷한 노래에요!</h2>
+                        </div>
+                        <div  class="div-block-9">
                             {% for meong in pro_meong %}
-                            <td class="text-center"><img src="{{ meong.img }}" height="160"></td>
+                            <div class="div-block-8">
+                                <img src="{{meong.img}}"width="160" alt="" />
+                                <div style="margin: 10px;"><strong>{{meong.title}}</div></strong>
+                                <div>{{meong.artist}}</div>
+                            </div>
                             {% endfor %}
-                        </tr>
-                        <tr>
-                            {% for meong in pro_meong %}
-                            <td class="text-center">{{ meong.title }}</td>
+                        </div>
+                        <div  class="div-block-10"><img
+                                src="./img/그림16.png"
+                                 width="30" alt="" class="image-4" />
+                            <h2 class="heading-2">플레이리스트에 함께 들어있던 노래들이에요!</h2>
+                        </div>
+                        <div  class="div-block-9">
+                            {% for psong in pro_psongs %}
+                            <div class="div-block-8">
+                                <img src="{{psongs.img}}" width="160" alt="" />
+                                <div style="margin: 10px;"><strong>{{psongs.title}}</div></strong>
+                                <div>{{psongs.artist}}</div>
+                            </div>
                             {% endfor %}
-                        </tr>
-                        <tr>
-                            {% for meong in pro_meong %}
-                            <td class="text-center">{{ meong.artist }}</td>
-                            {% endfor %}
-                        </tr>
-                    </table>
-                    <div class="mt-5">
-                        <h2>플레이리스트에 함께 들어있던 노래들이에요!</h2>
+                        </div>
                     </div>
-                    <table class="mt-3">
-                        <tr>
-                            {% for psong in pro_psongs %}
-                            <td class="text-center"><img src="{{ psong.img }}" height="160"></td>
-                           
-                            {% endfor %}
-                        </tr>
-                        <tr>
-                            {% for psong in pro_psongs %}
-                            <td class="text-center">{{ psong.title }}</td>
-                            {% endfor %}
-                        </tr>
-                        <tr>
-                            {% for psong in pro_psongs %}
-                            <td class="text-center">{{ psong.artist }}</td>
-                            {% endfor %}
-                        </tr>
-                    </table>
+
                     <div class="mt-5">
                         <h2> {{ pro_tags }}</h2>
                     </div>

@@ -96,12 +96,15 @@ def propose(find_songId, app):
         plist1 = pd.read_csv(plist_filename1)
         plist2 = pd.read_csv(plist_filename2)
         # consine 유사도 파일로 불러오기
+
         cosine_sim = joblib.load(cosine_sim_filename)
 
     except:
+        print('except')
         return '', {}, [], [], []
     
 
+    print("step 1")
     # 1. 데이터 처리를 위한 작업
     ###############################################
     plist1.plylstSeq = plist1.plylstSeq.astype(str)
