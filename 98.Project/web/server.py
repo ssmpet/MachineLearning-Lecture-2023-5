@@ -5,7 +5,8 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return 'Hello Flask'
+    weather = bbb.get_weather(app)
+    return 'Hello Flask' + weather
 
 @app.route('/first', methods=['GET', 'POST'])
 def first():

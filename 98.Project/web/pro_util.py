@@ -1,12 +1,49 @@
 import numpy as np
 import pandas as pd
-import os, re, string, joblib
+import os, re, string, joblib, json
+import requests
+
+##########################################################
+# get_weather : 현재 위치의 날씨 정보 얻어오기
+##########################################################
+def current_location():
+    here_req = requests.get("http://www.geoplugin.net/json.gp")
+
+    crd = {}
+    if (here_req.status_code != 200):
+        print("현재좌표를 불러올 수 없음")
+        return ''
+    else:
+        location = json.loads(here_req.text)
+        crd = {"lat": str(location["geoplugin_latitude"]), "lng": str(location["geoplugin_longitude"])}
+
+    return crd
+
+def get_weather(app):
+
+    crd = current_location()
+
+    if crd == '': return ''
+
+    filename = os.path.join(app.static_folder, 'key/openweather.txt')
+    with open(filename) as f:
+        weather_key = f.read().strip()
+
+    base_url  = 'https://api.openweathermap.org/data/2.5/weather'
+    # icon_deps = 'https://api.openweathermap.org/img/w/'
+
+    url = f"{base_url}?lat={crd['lat']}&lon={crd['lng']}&appid={weather_key}&units=metric&lang=kr"
+    result = requests.get(url).json()
+
+    desc = result['weather'][0]['description']
+
+    return desc
+
 
 ##########################################################
 # search_songs : 노래 제목과 가수 검색해서 결과값 리턴
 ##########################################################
 def search_songs(key_title, key_artist, app):
-# def search_songs(key_title, key_artist):
 
     # print(key_title, key_artist)
     filename = os.path.join(app.static_folder, 'data/melon_song_v3.csv')
@@ -17,8 +54,8 @@ def search_songs(key_title, key_artist, app):
     except:
         return []
     
-    df.date.fillna(0, inplace=True)
-    df['date'] = df.date.astype(int).astype(str)
+    # df.date.fillna(0, inplace=True)
+    # df['date'] = df.date.astype(int).astype(str)
     df.fillna('', inplace=True)
     df.songId = df.songId.astype(str)
     # 노래 제목과 가수로 찾기
@@ -38,7 +75,6 @@ def search_songs(key_title, key_artist, app):
 # propose : 해당 노래에 대해 여러가지로 추천
 ##########################################################
 def propose(find_songId, app):
-# def propose(find_songId):
 
     def get_recommendation(songId, cos_sim):
         index = indices[songId]
@@ -71,8 +107,8 @@ def propose(find_songId, app):
     plist1.plylstSeq = plist1.plylstSeq.astype(str)
     plist2.songId = plist2.songId.astype(str)
 
-    df.date.fillna(0, inplace=True)
-    df['date'] = df.date.astype(int).astype(str)
+    # df.date.fillna(0, inplace=True)
+    # df['date'] = df.date.astype(int).astype(str)
     df.fillna('', inplace=True)
     df['comment_like_total'] = df.comment + df.like
     df['songId'] = df.songId.astype(str)
@@ -81,6 +117,7 @@ def propose(find_songId, app):
     # 곡 정보 추가
     ###############################################
     self_song = df[df.songId == find_songId][['title', 'artist', 'album', 'date', 'genre', 'img', 'ly_summary']].to_dict('records')[0]
+    # if self_song['date'] != '0' : self_song['date'] = self_song['date'][:4] +'.' + self_song['date'][4:6] + '.' + self_song['date'][6:]
     
 
     # 2. index 매칭
@@ -120,11 +157,11 @@ def propose(find_songId, app):
     if len(tags[0]) :
         re_count = np.argsort(-tags[1]) 
         if len(re_count) > 2:
-            pro_tags = f"{tags[0][re_count][0].strip('#')}, {tags[0][re_count][1].strip('#')} 그리고 {tags[0][re_count][2].strip('#')}"
+            pro_tags = f"{tags[0][re_count][0]}, {tags[0][re_count][1]} 그리고 {tags[0][re_count][2].strip('#')}"
         elif len(re_count) == 2:
-            pro_tags = f"{tags[0][re_count][0].strip('#')} 그리고 {tags[0][re_count][1].strip('#')}"
+            pro_tags = f"{tags[0][re_count][0]} 그리고 {tags[0][re_count][1]}"
         else:
-            pro_tags = f"{tags[0][re_count][0].strip('#')}"
+            pro_tags = f"{tags[0][re_count][0]}"
 
     else:
         pro_tags = ''

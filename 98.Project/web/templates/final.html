@@ -40,7 +40,8 @@
                         <tr>
                             <td>{{ self_song.album }}</td>
                         </tr>
-                            <td>{{ self_song.date[:4]}}.{{self_song.date[4:6]}}.{{self_song.date[6:]}}</td>
+                            <td>{{ self_song.date }}</td>
+                            <!-- <td>{{ self_song.date }}</td> -->
                         </tr>
                         <tr>
                             <td colspan="2"> {{ self_song.ly_summary | safe() }}</td>
