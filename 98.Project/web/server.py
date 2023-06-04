@@ -5,8 +5,8 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-
     return 'Hello Flask'
+
 
 @app.route('/first', methods=['GET', 'POST'])
 def first():
@@ -31,13 +31,14 @@ def result():
 
         return render_template('final.html', pro_tags=pro_tags, self_song=self_song, pro_contents=pro_contents, pro_meong=pro_meong, pro_psongs=pro_psongs)
 
+
 @app.route('/weather_time/<int:kind>')
 def weather_time(kind):
-    
-    # print('weather_time')
+
     desc, img_name, songs = bbb.get_weather_time(app, kind)
-    # print('weather_time1')
+
     return render_template('weather_time.html', order=kind, desc=desc, img_name=img_name, songs=songs)
+
 
 if __name__ == '__main__': 
     app.run(debug=False)

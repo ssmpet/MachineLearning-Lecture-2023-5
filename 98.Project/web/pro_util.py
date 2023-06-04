@@ -119,7 +119,7 @@ def get_weather_time(app, kind=0):
 
     songs = songs.to_dict('records')
 
-    return desc, f'img/weather/{img_name}', songs
+    return desc, f'img/weather_time/{img_name}', songs
 
 
 ##########################################################
@@ -134,12 +134,11 @@ def search_songs(key_title, key_artist, app):
     except:
         return []
     
-    # df.date.fillna(0, inplace=True)
-    # df['date'] = df.date.astype(int).astype(str)
     df.fillna('', inplace=True)
     df.songId = df.songId.astype(str)
+
     # 노래 제목과 가수로 찾기
-    
+
     key_title = re.sub('['+string.punctuation+']', '', key_title)
     key_artist = re.sub('['+string.punctuation+']', '', key_artist)
 
@@ -189,7 +188,6 @@ def propose(find_songId, app):
     # 2. index 매칭
     indices = pd.Series(df.index, index=df.songId)
 
-
     # 3. 곡 정보 추가
     self_song = df[df.songId == find_songId][['title', 'artist', 'album', 'date', 'genre', 'img', 'ly_summary']].to_dict('records')[0]
 
@@ -197,7 +195,6 @@ def propose(find_songId, app):
     a = get_recommendation(find_songId, cosine_sim).to_frame()
     pro_contents = df[df['songId'].isin(a.songId[1:6])][['songId', 'title', 'artist', 'img']].to_dict('records')
     
-
     # 5. 숨은 명곡 추천
     # 찾고 싶은 구간 정하기
     numbers = df['comment_like_total']
@@ -212,7 +209,6 @@ def propose(find_songId, app):
     d = a[a['songId'].isin(filtered_data.songId.values)].head(5)
     pro_meong = df[df['songId'].isin(d.songId.values[:5])][['songId', 'title', 'artist', 'img']].to_dict('records')
 
-
     # 7. 플레이리스트 추천
     # 1) 가장 많이 들어간 tag 찾기
     tags = np.unique(' '.join(plist1[plist1.songIds.str.contains(find_songId)]['tag'].values).split(), return_counts=True)
@@ -226,7 +222,6 @@ def propose(find_songId, app):
             pro_tags = f"{tags[0][re_count][0]} 그리고 {tags[0][re_count][1]}"
         else:
             pro_tags = f"{tags[0][re_count][0]}"
-
     else:
         pro_tags = ''
 
@@ -250,7 +245,6 @@ def propose(find_songId, app):
             if not tmp.empty:
                 cnt += 1
                 pro_psongs = pd.concat([pro_psongs, tmp])
-
         if cnt == 5 : break
 
     # 플레이리트 추천이 없을 수도 있다.
