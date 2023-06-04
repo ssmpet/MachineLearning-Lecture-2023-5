@@ -5,26 +5,26 @@ import requests
 from datetime import datetime
 
 ##########################################################
-# get_weather_time : 현재 위치의 날씨 정보, 현재 시간 얻기
+# 현재 위치 알기
 ##########################################################
 def current_location():
     here_req = requests.get("http://www.geoplugin.net/json.gp")
 
     crd = {}
-    if (here_req.status_code != 200):
+    if here_req.status_code != 200:
         print("현재좌표를 불러올 수 없음")
-        return ''
     else:
         location = json.loads(here_req.text)
         crd = {"lat": str(location["geoplugin_latitude"]), "lng": str(location["geoplugin_longitude"])}
 
     return crd
 
+# 날씨 정보 얻기
 def get_weather(app):
 
     crd = current_location()
 
-    if crd == '': return '맑', 'drive2.jpg'
+    if crd == {} : return '맑', 'drive2.jpg'
 
     filename = os.path.join(app.static_folder, 'key/openweather.txt')
     with open(filename) as f:
@@ -54,30 +54,39 @@ def get_weather(app):
         img_name = 'rain2.jpg'
 
     return desc, img_name
-    
 
+
+# 현재 시간 얻기
+def get_time():
+    now = datetime.now().hour
+    if now < 7 or now > 20:
+        desc = '새벽'
+        img_name = 'dawn.jpg'
+    elif 7 <= now <= 12:
+        desc = '출근'
+        img_name = 'joody2.jpg'
+    elif 12 < now < 18:
+        desc = '오후'
+        img_name = 'afternoon3.png'
+    elif 18 <= now <= 20:
+        desc = '저녁'
+        img_name = 'bus.jpg'
+    
+    return desc, img_name
+
+
+##########################################################
+# 날씨별, 시간대별 노래 추천
+# kind : 0(날씨), 1(시간대) 
+##########################################################
 def get_weather_time(app, kind=0):
 
     if kind == 0 :
         desc, img_name = get_weather(app)
-    # 시간 때별        
     else:
-        now = datetime.now().hour
-        if now < 7 or now > 20:
-            desc = '새벽'
-            img_name = 'dawn.jpg'
-        elif 7 <= now <= 12:
-            desc = '출근'
-            img_name = 'joody2.jpg'
-        elif 12 < now < 18:
-            desc = '오후'
-            img_name = 'afternoon3.png'
-        elif 18 <= now <= 20:
-            desc = '저녁'
-            img_name = 'bus.jpg'
-        
-    
-    # 흐린 노래 추천
+       desc, img_name = get_time()
+
+    # 노래 추천
     filename = os.path.join(app.static_folder, 'data/melon_song_v3.csv')
     plist_filename1 = os.path.join(app.static_folder, 'data/melon_playlist1.csv')
     plist_filename2 = os.path.join(app.static_folder, 'data/melon_playlist2_v2.csv')
@@ -89,7 +98,7 @@ def get_weather_time(app, kind=0):
     df.songId = df.songId.astype(str)
     plist2.songId = plist2.songId.astype(str)
 
-    choice_songs = np.random.choice(list(set(' '.join(plist1[plist1.tag.str.contains(desc)]['songIds'].values).split())),
+    choice_songs = np.random.choice(' '.join(plist1[plist1.tag.str.contains(desc)]['songIds'].values).split(),
                                      20, replace=False)
 
     cnt = 0
@@ -118,9 +127,7 @@ def get_weather_time(app, kind=0):
 ##########################################################
 def search_songs(key_title, key_artist, app):
 
-    # print(key_title, key_artist)
     filename = os.path.join(app.static_folder, 'data/melon_song_v3.csv')
-    # filename = '../data/melon_song_v2.csv'
 
     try:
         df = pd.read_csv(filename)
@@ -141,8 +148,6 @@ def search_songs(key_title, key_artist, app):
     
     return songIds
 
-########## end of search_songs ###########################
-
 
 ##########################################################
 # propose : 해당 노래에 대해 여러가지로 추천
@@ -155,9 +160,6 @@ def propose(find_songId, app):
         song_indices = sim_scores.sort_values(ascending=False).head(31).tail(30).index
         return df.songId.iloc[song_indices]
 
-    # filename = '../data/melon_song_v2.csv'
-    # plist_filename1 = '../data/melon_playlist1.csv'
-    # plist_filename2 = '../data/melon_playlist2_v2.csv'
     try:
 
         filename = os.path.join(app.static_folder, 'data/melon_song_v3.csv')
@@ -168,47 +170,35 @@ def propose(find_songId, app):
         df = pd.read_csv(filename)
         plist1 = pd.read_csv(plist_filename1)
         plist2 = pd.read_csv(plist_filename2)
-        # consine 유사도 파일로 불러오기
 
+        # consine 유사도 파일로 불러오기
         cosine_sim = joblib.load(cosine_sim_filename)
 
     except:
-        print('except')
         return '', {}, [], [], []
     
 
-    print("step 1")
     # 1. 데이터 처리를 위한 작업
-    ###############################################
     plist1.plylstSeq = plist1.plylstSeq.astype(str)
     plist2.songId = plist2.songId.astype(str)
-
-    # df.date.fillna(0, inplace=True)
-    # df['date'] = df.date.astype(int).astype(str)
     df.fillna('', inplace=True)
     df['comment_like_total'] = df.comment + df.like
     df['songId'] = df.songId.astype(str)
     df.lyric = df.lyric.str.replace('\r', '')
 
-    # 곡 정보 추가
-    ###############################################
-    self_song = df[df.songId == find_songId][['title', 'artist', 'album', 'date', 'genre', 'img', 'ly_summary']].to_dict('records')[0]
-    # if self_song['date'] != '0' : self_song['date'] = self_song['date'][:4] +'.' + self_song['date'][4:6] + '.' + self_song['date'][6:]
-    
-
     # 2. index 매칭
-    ###############################################
     indices = pd.Series(df.index, index=df.songId)
 
 
-    # 3. 컨텐츠 기반 추천
-    ###############################################
+    # 3. 곡 정보 추가
+    self_song = df[df.songId == find_songId][['title', 'artist', 'album', 'date', 'genre', 'img', 'ly_summary']].to_dict('records')[0]
+
+    # 4. 컨텐츠 기반 추천
     a = get_recommendation(find_songId, cosine_sim).to_frame()
     pro_contents = df[df['songId'].isin(a.songId[1:6])][['songId', 'title', 'artist', 'img']].to_dict('records')
     
 
-    # 4. 숨은 명곡 추천
-    ###############################################
+    # 5. 숨은 명곡 추천
     # 찾고 싶은 구간 정하기
     numbers = df['comment_like_total']
     sorted_numbers = np.sort(numbers)
@@ -223,13 +213,11 @@ def propose(find_songId, app):
     pro_meong = df[df['songId'].isin(d.songId.values[:5])][['songId', 'title', 'artist', 'img']].to_dict('records')
 
 
-    # 5. 플레이리스트 추천
-    ###############################################
-    # 가장 많이 들어간 tag 찾기
-
+    # 7. 플레이리스트 추천
+    # 1) 가장 많이 들어간 tag 찾기
     tags = np.unique(' '.join(plist1[plist1.songIds.str.contains(find_songId)]['tag'].values).split(), return_counts=True)
-    # argsort : 값이 큰 순서대로 값의 인덱스 정렬 -1 큰 순서대로
 
+    # argsort : 값이 큰 순서대로 값의 인덱스 정렬 -1 큰 순서대로
     if len(tags[0]) :
         re_count = np.argsort(-tags[1]) 
         if len(re_count) > 2:
@@ -242,33 +230,34 @@ def propose(find_songId, app):
     else:
         pro_tags = ''
 
-    # 가장 많이 들어가 songId 찾기
+    # 2) 가장 많이 들어가 songId 찾기
+    # 자기 자신은 제외
     songs = np.unique(' '.join(plist1[plist1.songIds.str.contains(find_songId)]['songIds'].values).replace(find_songId + ' ', '').split(), return_counts=True)
 
     cnt = 0
-    song_list = []
-
+    pro_psongs = pd.DataFrame()
     # argsort 값을 sort해서 값의 index를 오름차순으로 '-' 해주면 내림차순으로
-    for s_id in songs[0][np.argsort(-songs[1])]:    
-        if not df[df.songId.isin([s_id])].empty : # df에 있으면 추가
+    for s_id in songs[0][np.argsort(-songs[1])]:  
+        # song 테이블에서 먼저 찾는다.  
+        tmp = df[df.songId.isin([s_id])][['songId', 'title', 'artist', 'img']]
+        if not tmp.empty :
             cnt += 1
-            song_list.append(s_id)
+            pro_psongs = pd.concat([pro_psongs, tmp])
+        # 없으면 플레이리스트2에 있는 songId 에서 정보 가져오기
+        else: 
+            # 플레이리스트2 에도 없으면 없는 것으로 
+            tmp = plist2[plist2.songId.isin([s_id])]
+            if not tmp.empty:
+                cnt += 1
+                pro_psongs = pd.concat([pro_psongs, tmp])
+
         if cnt == 5 : break
-    
 
-    # 해당 songId 들 정보 출력
-    # 없으면 플레이리스트2에 있는 songId 에서 정보 가져오기
-    pro_psongs = df[df.songId.isin(song_list)][['songId', 'title', 'artist', 'img']]
-
-    if pro_psongs.empty:
-        pro_psongs = plist2[plist2.songId.isin(song_list)]
-
+    # 플레이리트 추천이 없을 수도 있다.
     pro_psongs = pro_psongs.to_dict('records')
 
-    # print(pro_tags, pro_contents, pro_meong, pro_psongs)
-
     return pro_tags, self_song, pro_contents, pro_meong, pro_psongs
-########## end of propose ##############################
+########## end of propose ####################################################
 
 
 

@@ -18,9 +18,19 @@
         </style>
     </head>
     <body >
-        <div class="container-fluid p-3 bg-warning text-white text-center mt-5">
+        <div class="container-fluid bg-warning text-white text-center">
             <h1>Want listen to it?</h1>
-            <p>test</p>
+            <nav class="navbar navbar-expand-sm naver-light">
+                <div class="container-fluid">
+                    <div class="collapse navbar-collapse justify-content-center" id="myNavbar" >
+                        <ul class="nav">
+                            <li class="nav-item"><a href="/first" class="nav-link active"><span style="color: #fff"><strong>Home</strong></span></a></li>
+                            <li class="nav-item"><a href="/weather_time/0" class="nav-link active"><span style="color: #fff"><strong>날씨추천</strong></span></a></li>
+                            <li class="nav-item"><a href="/weather_time/1" class="nav-link active" ><span style="color: #fff"><strong>시간대추천</strong></span></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
         </div>
         <div class="container">
             <div class="row justify-content-center mt-5">
@@ -131,59 +141,36 @@
                     </div>
                     <div class="row mt-5">
                         <div class="col-4">
-                            <img src="https://cdnimg.melon.co.kr/cm/album/images/000/28/985/28985_500.jpg/melon/resize/282/quality/80/optimize" height="360">
+                            <img src=" {{ pro_contents[0].img }}" height="360">
                         </div>
                         <div class="col-6 d-flex justify-content-end">
                             <div style="height: 360px; width: 500px; overflow: auto;">
-                                <table class="playlist">
+                                <table class="table playlist table-hover">
+                                    {% for content in pro_contents %}
                                     <tr>
-                                        <td><img src="https://cdnimg.melon.co.kr/cm/album/images/000/28/985/28985_500.jpg/melon/resize/282/quality/80/optimize" height="60"></td>
-                                        <td>희재</td>
-                                        <td>성시경</td>
+                                        <td><img src="{{ content.img }}" height="60"></td>
+                                        <td>{{content.title}}</td>
+                                        <td>{{content.artist}}</td>
                                         <td><i class="fa-solid fa-heart"></i></td>
                                     </tr>
+                                    {% endfor %}
+                                    {% for meong in pro_meong %}
                                     <tr>
-                                        <td><img src="https://cdnimg.melon.co.kr/cm2/album/images/110/48/906/11048906_20220906180454_500.jpg?d530d42b8ca05e5fe8c89007570a3d26/melon/resize/282/quality/80/optimize" height="60"></td>
-                                        <td>인생은 뷰티풀</td>
-                                        <td>김호중</td>
+                                        <td><img src="{{meong.img}}" height="60"></td>
+                                        <td>{{meong.title}}</td>
+                                        <td>{{meong.artist}}</td>
                                         <td><i class="fa-solid fa-heart"></i></td>
                                     </tr>
+                                    {% endfor %}
+                                    {% for psong in pro_psongs %}
                                     <tr>
-                                        <td><img src="https://cdnimg.melon.co.kr/cm/album/images/003/11/401/311401_500.jpg/melon/resize/282/quality/80/optimize" height="60"></td>
-                                        <td>서쪽하늘</td>
-                                        <td>이승철</td>
+                                        <td><img src="{{psong.img}}" height="60"></td>
+                                        <td>{{psong.title}}</td>
+                                        <td>{{psong.artist}}</td>
                                         <td><i class="fa-solid fa-heart"></i></td>
                                     </tr>
-                                    <tr>
-                                        <td><img src="https://cdnimg.melon.co.kr/cm2/album/images/110/48/906/11048906_20220906180454_500.jpg?d530d42b8ca05e5fe8c89007570a3d26/melon/resize/282/quality/80/optimize" height="60"></td>
-                                        <td>슬픈등</td>
-                                        <td>김호중</td>
-                                        <td><i class="fa-solid fa-heart"></i></td>
-                                    </tr>
-                                    <tr>
-                                        <td><img src="https://cdnimg.melon.co.kr/cm2/album/images/110/78/402/11078402_20221014143446_500.jpg?0804744f4d981d946bae2d54db3daa4c/melon/resize/282/quality/80/optimize" height="60"></td>
-                                        <td>고백 (영화 '동감' X 츄 (이달의 소녀))</td>
-                                        <td>츄(Chuu)</td>
-                                        <td><i class="fa-solid fa-heart"></i></td>
-                                    </tr>
-                                    <tr>
-                                        <td><img src="https://cdnimg.melon.co.kr/cm/album/images/000/28/985/28985_500.jpg/melon/resize/282/quality/80/optimize" height="60"></td>
-                                        <td>희재</td>
-                                        <td>성시경</td>
-                                        <td><i class="fa-solid fa-heart"></i></td>
-                                    </tr>
-                                    <tr>
-                                        <td><img src="https://cdnimg.melon.co.kr/cm/album/images/000/28/985/28985_500.jpg/melon/resize/282/quality/80/optimize" height="60"></td>
-                                        <td>희재</td>
-                                        <td>성시경</td>
-                                        <td><i class="fa-solid fa-heart"></i></td>
-                                    </tr>
-                                    <tr>
-                                        <td><img src="https://cdnimg.melon.co.kr/cm/album/images/000/28/985/28985_500.jpg/melon/resize/282/quality/80/optimize" height="60"></td>
-                                        <td>희재</td>
-                                        <td>성시경</td>
-                                        <td><i class="fa-solid fa-heart"></i></td>
-                                    </tr>
+                                    {% endfor %}
+                                    
                                 </table>
                             </div>
                         </div>
@@ -191,6 +178,7 @@
                 </div>
                 <div class="col-2"></div>
             </div>
-        </div>        
+        </div>      
+        <br><br>  
     </body>    
 </html>

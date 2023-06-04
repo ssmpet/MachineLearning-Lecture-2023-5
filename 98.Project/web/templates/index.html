@@ -14,15 +14,15 @@
         </style>
     </head>
     <body>
-        <div class="container-fluid p-3 bg-warning text-white text-center mt-5">
+        <div class="container-fluid bg-warning text-white text-center">
             <h1>Want listen to it?</h1>
             <nav class="navbar navbar-expand-sm naver-light">
                 <div class="container-fluid">
                     <div class="collapse navbar-collapse justify-content-center" id="myNavbar" >
                         <ul class="nav">
-                            <li class="nav-item"><a href="/weather_time/0" class="nav-link {% if order==0 %}active{%endif%}"><span style="color: #fff">{% if order==0 %}<strong>{%endif%}날씨추천{% if order==0 %}</strong>{%endif%}</span></a></li>
-                            <li class="nav-item"><a href="/weather_time/1" class="nav-link {% if order==1 %}active{%endif%}" ><span style="color: #fff">{% if order==1 %}<strong>{%endif%}시간대추천{% if order==1 %}</strong>{%endif%}</span></a></li>
-                            
+                            <li class="nav-item"><a href="/first" class="nav-link active" ><span style="color: #fff"><strong>Home</strong></span></a></li>
+                            <li class="nav-item"><a href="/weather_time/0" class="nav-link active"><span style="color: #fff"><strong>날씨추천</strong></span></a></li>
+                            <li class="nav-item"><a href="/weather_time/1" class="nav-link active" ><span style="color: #fff"><strong>시간대추천</strong></span></a></li>
                         </ul>
                     </div>
                 </div>
