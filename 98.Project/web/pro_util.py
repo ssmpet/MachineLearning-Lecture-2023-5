@@ -2,9 +2,10 @@ import numpy as np
 import pandas as pd
 import os, re, string, joblib, json
 import requests
+from datetime import datetime
 
 ##########################################################
-# get_weather : 현재 위치의 날씨 정보 얻어오기
+# get_weather_time : 현재 위치의 날씨 정보, 현재 시간 얻기
 ##########################################################
 def current_location():
     here_req = requests.get("http://www.geoplugin.net/json.gp")
@@ -23,7 +24,7 @@ def get_weather(app):
 
     crd = current_location()
 
-    if crd == '': return ''
+    if crd == '': return '맑', 'drive2.jpg'
 
     filename = os.path.join(app.static_folder, 'key/openweather.txt')
     with open(filename) as f:
@@ -31,13 +32,85 @@ def get_weather(app):
 
     base_url  = 'https://api.openweathermap.org/data/2.5/weather'
     # icon_deps = 'https://api.openweathermap.org/img/w/'
+    # 참조 사이트 'https://openweathermap.org/weather-conditions'
 
     url = f"{base_url}?lat={crd['lat']}&lon={crd['lng']}&appid={weather_key}&units=metric&lang=kr"
     result = requests.get(url).json()
 
-    desc = result['weather'][0]['description']
+    weather_id = result['weather'][0]['id']
+    # desc = result['weather'][0]['description']
 
-    return desc
+    if weather_id == 800: 
+        desc = '맑'
+        img_name = 'drive2.jpg'
+    elif 600 <= weather_id < 700:
+        desc = '눈'
+        img_name = 'winter_snow2.jpg'
+    elif weather_id > 800:
+        desc = '흐림'
+        img_name = 'cloud2.jpg'
+    else:
+        desc = '비'
+        img_name = 'rain2.jpg'
+
+    return desc, img_name
+    
+
+def get_weather_time(app, kind=0):
+
+    if kind == 0 :
+        desc, img_name = get_weather(app)
+    # 시간 때별        
+    else:
+        now = datetime.now().hour
+        if now < 7 or now > 20:
+            desc = '새벽'
+            img_name = 'dawn.jpg'
+        elif 7 <= now <= 12:
+            desc = '출근'
+            img_name = 'joody2.jpg'
+        elif 12 < now < 18:
+            desc = '오후'
+            img_name = 'afternoon3.png'
+        elif 18 <= now <= 20:
+            desc = '저녁'
+            img_name = 'bus.jpg'
+        
+    
+    # 흐린 노래 추천
+    filename = os.path.join(app.static_folder, 'data/melon_song_v3.csv')
+    plist_filename1 = os.path.join(app.static_folder, 'data/melon_playlist1.csv')
+    plist_filename2 = os.path.join(app.static_folder, 'data/melon_playlist2_v2.csv')
+
+    df = pd.read_csv(filename)
+    plist1 = pd.read_csv(plist_filename1)
+    plist2 = pd.read_csv(plist_filename2)
+    df.fillna('', inplace=True)
+    df.songId = df.songId.astype(str)
+    plist2.songId = plist2.songId.astype(str)
+
+    choice_songs = np.random.choice(list(set(' '.join(plist1[plist1.tag.str.contains(desc)]['songIds'].values).split())),
+                                     20, replace=False)
+
+    cnt = 0
+    songs = pd.DataFrame()
+
+    for s_id in choice_songs:    
+        tmp = df[df.songId.isin([s_id])][['songId', 'title', 'artist', 'img']]
+
+        if not tmp.empty : # df에 있으면 추가
+            cnt += 1
+            songs = pd.concat([songs, tmp])
+        else:
+            tmp = plist2[plist2.songId.isin([s_id])]
+            if not tmp.empty :
+                cnt += 1
+                songs = pd.concat([songs, tmp])
+        if cnt == 10 : break
+
+    songs = songs.to_dict('records')
+
+    return desc, f'img/weather/{img_name}', songs
 
 
 ##########################################################

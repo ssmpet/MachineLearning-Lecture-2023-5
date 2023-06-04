@@ -57,7 +57,11 @@
                         
                         <tr>
                             {% for content in pro_contents %}
-                            <td class="text-center"><img src="{{ content.img }}" height="160"></td>
+                            <td class="text-center">
+                                <a href="https://www.melon.com/song/detail.htm?songId={{ content.songId }}" target="_blank">
+                                    <img src="{{ content.img }}" height="160">
+                                </a>
+                            </td>
                             {% endfor %}
                         </tr>
                         
@@ -79,7 +83,11 @@
                     <table class="mt-3">
                         <tr>
                             {% for meong in pro_meong %}
-                            <td class="text-center"><img src="{{ meong.img }}" height="160"></td>
+                            <td class="text-center">
+                                <a href="https://www.melon.com/song/detail.htm?songId={{ meong.songId }}" target="_blank">
+                                    <img src="{{ meong.img }}" height="160">
+                                </a>
+                            </td>
                             {% endfor %}
                         </tr>
                         <tr>
@@ -99,7 +107,11 @@
                     <table class="mt-3">
                         <tr>
                             {% for psong in pro_psongs %}
-                            <td class="text-center"><img src="{{ psong.img }}" height="160"></td>
+                            <td class="text-center">
+                                <a href="https://www.melon.com/song/detail.htm?songId={{ psong.songId }}" target="_blank">
+                                    <img src="{{ psong.img }}" height="160">
+                                </a>
+                            </td>
                            
                             {% endfor %}
                         </tr>
