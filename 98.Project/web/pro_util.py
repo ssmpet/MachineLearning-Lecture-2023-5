@@ -31,48 +31,56 @@ def get_weather(app):
         weather_key = f.read().strip()
 
     base_url  = 'https://api.openweathermap.org/data/2.5/weather'
-    # icon_deps = 'https://api.openweathermap.org/img/w/'
+    icon_deps = 'https://api.openweathermap.org/img/w/'
     # 참조 사이트 'https://openweathermap.org/weather-conditions'
 
     url = f"{base_url}?lat={crd['lat']}&lon={crd['lng']}&appid={weather_key}&units=metric&lang=kr"
     result = requests.get(url).json()
 
     weather_id = result['weather'][0]['id']
-    # desc = result['weather'][0]['description']
+    weather_desc = result['weather'][0]['description']
+    icon_code = result['weather'][0]['icon']
+    icon_url = f'{icon_deps}{icon_code}.png'
+
+    html = f'날씨는 "<strong>{weather_desc}</strong><img src="{icon_url}" height="80">"'
 
     if weather_id == 800: 
-        desc = '맑'
+        desc = '햇|드라이브'
         img_name = 'drive2.jpg'
     elif 600 <= weather_id < 700:
-        desc = '눈'
+        desc = '눈|겨울'
         img_name = 'winter_snow2.jpg'
     elif weather_id > 800:
-        desc = '흐림'
+        desc = '흐|휴식'
         img_name = 'cloud2.jpg'
     else:
-        desc = '비'
+        desc = '비|센치'
         img_name = 'rain2.jpg'
 
-    return desc, img_name
+    return desc, img_name, html
 
 
 # 현재 시간 얻기
 def get_time():
-    now = datetime.now().hour
-    if now < 7 or now > 20:
-        desc = '새벽'
+    now = datetime.now()
+    hour = now.hour
+    html = ''
+
+    if 0 <= hour <= 6:
+        desc = '새벽|감성'
         img_name = 'dawn.jpg'
-    elif 7 <= now <= 12:
-        desc = '출근'
+    elif 6 < hour <= 12:
+        desc = '출근|아이돌'
         img_name = 'joody2.jpg'
-    elif 12 < now < 18:
-        desc = '오후'
+    elif 12 < hour < 18:
+        desc = '오후|기분'
         img_name = 'afternoon3.png'
-    elif 18 <= now <= 20:
-        desc = '저녁'
+    elif 18 <= hour <= 24:
+        desc = '버스|지하철'
         img_name = 'bus.jpg'
     
-    return desc, img_name
+    html = f'시간은 {hour}시 {now.minute}분'
+    return desc, img_name, html
 
 
 ##########################################################
@@ -82,9 +90,9 @@ def get_time():
 def get_weather_time(app, kind=0):
 
     if kind == 0 :
-        desc, img_name = get_weather(app)
+        desc, img_name, html = get_weather(app)
     else:
-       desc, img_name = get_time()
+       desc, img_name, html = get_time()
 
     # 노래 추천
     filename = os.path.join(app.static_folder, 'data/melon_song_v3.csv')
@@ -119,7 +127,7 @@ def get_weather_time(app, kind=0):
 
     songs = songs.to_dict('records')
 
-    return desc, f'img/weather_time/{img_name}', songs
+    return html, f'img/weather_time/{img_name}', songs
 
 
 ##########################################################
@@ -193,7 +201,7 @@ def propose(find_songId, app):
 
     # 4. 컨텐츠 기반 추천
     a = get_recommendation(find_songId, cosine_sim).to_frame()
-    pro_contents = df[df['songId'].isin(a.songId[1:6])][['songId', 'title', 'artist', 'img']].to_dict('records')
+    pro_contents = df[df['songId'].isin(a.songId[1:6])][['songId', 'title', 'artist', 'album', 'img']].to_dict('records')
     
     # 5. 숨은 명곡 추천
     # 찾고 싶은 구간 정하기
@@ -207,7 +215,7 @@ def propose(find_songId, app):
     # 명곡 컨텐츠 추천
     # 유사도 top 30 중 원하는 구간에 있는 songId 추출(유사도순)
     d = a[a['songId'].isin(filtered_data.songId.values)].head(5)
-    pro_meong = df[df['songId'].isin(d.songId.values[:5])][['songId', 'title', 'artist', 'img']].to_dict('records')
+    pro_meong = df[df['songId'].isin(d.songId.values[:5])][['songId', 'title', 'artist', 'album', 'img']].to_dict('records')
 
     # 7. 플레이리스트 추천
     # 1) 가장 많이 들어간 tag 찾기
@@ -234,7 +242,7 @@ def propose(find_songId, app):
     # argsort 값을 sort해서 값의 index를 오름차순으로 '-' 해주면 내림차순으로
     for s_id in songs[0][np.argsort(-songs[1])]:  
         # song 테이블에서 먼저 찾는다.  
-        tmp = df[df.songId.isin([s_id])][['songId', 'title', 'artist', 'img']]
+        tmp = df[df.songId.isin([s_id])][['songId', 'title', 'artist', 'img', 'album' ]]
         if not tmp.empty :
             cnt += 1
             pro_psongs = pd.concat([pro_psongs, tmp])

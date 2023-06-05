@@ -39,13 +39,8 @@
                                     <ul role="list" class="nav-menu-two w-list-unstyled">
                                         <li><a href="/weather_time/0" class="nav-link">Weather</a></li>
                                         <li><a href="/weather_time/1" class="nav-link">Time</a></li>
-                                        {% if session['uid'] %}
-                                            <li><a href="/logout" class="nav-link">Logout</a></li>
-                                            <li><a href="/mypage" class="nav-link">My page</a></li>
-                                        {% else %}
-                                            <li><a href="/login" class="nav-link">Login</a></li>
-                                            <li><a href="/signup" class="nav-link">Sign up</a></li>
-                                        {% endif %}
+                                        <li><a href="#" class="nav-link">Login</a></li>
+                                        <li><a href="#" class="nav-link">Sign up</a></li>
                                     </ul>
                                 </nav>
                                 <div class="menu-button w-nav-button">
@@ -142,7 +137,7 @@
         </div>
         <section id="list" class="list-section wf-section">
             <div data-w-id="d56fbba5-9ffe-ad7d-0e5e-06923c8462b1" style="opacity:0" class="div-block-22">
-                <div class="div-block-26"><h1 class="heading-5">{{pro_tags}}</h1></div>
+                <div class="div-block-26"><h1 class="heading-5">{{ pro_tags }}</h1></div>
                 <div class="div-block-27">
                     <div class="div-block-28">
                         <div class="div-block-30"><img src="{{self_song.img}}" loading="lazy" width="400" height="400" class="image-8" /></div>
@@ -190,13 +185,8 @@
                     <div class="footer-block-three">
                         <a href="/weather_time/0" class="footer-link-three">Weather</a>
                         <a href="/weather_time/1" class="footer-link-three">Time</a>
-                        {% if session['uid'] %}
-                            <a href="/logout" class="footer-link-three">Logout</a>
-                            <a href="/update" class="footer-link-three">회원정보 수정</a>
-                        {% else %}
-                            <a href="/login" class="footer-link-three">Login</a>
-                            <a href="/signup" class="footer-link-three">Sign up</a>
-                        {% endif %}
+                        <a href="#" class="footer-link-three">Login</a>
+                        <a href="#" class="footer-link-three">Sign up</a>
                     </div>
                     <div class="footer-social-block-three">
                         <a href="#" class="footer-social-link-three w-inline-block">

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+        <script src="https://kit.fontawesome.com/6ad2601fd7.js" crossorigin="anonymous"></script>
+        <style>
+            * { font-family: 'Noto Sans KR', sans-serif; }
+            a { text-decoration: none; }
+            .playlist tr { border-bottom: 1px solid black; }
+            .playlist td { padding: 0 10px; }
+
+            
+        </style>
+    </head>
+    <body >
+        <div class="container-fluid bg-warning text-white text-center">
+            <h1>Want listen to it?</h1>
+            <nav class="navbar navbar-expand-sm naver-light">
+                <div class="container-fluid">
+                    <div class="collapse navbar-collapse justify-content-center" id="myNavbar" >
+                        <ul class="nav">
+                            <li class="nav-item"><a href="/first" class="nav-link active"><span style="color: #fff"><strong>Home</strong></span></a></li>
+                            <li class="nav-item"><a href="/weather_time/0" class="nav-link active"><span style="color: #fff"><strong>날씨추천</strong></span></a></li>
+                            <li class="nav-item"><a href="/weather_time/1" class="nav-link active" ><span style="color: #fff"><strong>시간대추천</strong></span></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <div class="container">
+            <div class="row justify-content-center mt-5">
+                <div class="col-2"></div>
+                <div class="col-10">
+                    <div class="mt-5">
+                        <h2>곡정보</h2>
+                    </div>
+                    <table class="mt-3">
+                        <tr>
+                            <td rowspan="5"><img src="{{ self_song.img}}" alt="" height="300"></td>
+                        </tr>
+                        <tr>
+                            <td>{{ self_song.title }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ self_song.artist }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ self_song.album }}</td>
+                        </tr>
+                            <td>{{ self_song.date }}</td>
+                            <!-- <td>{{ self_song.date }}</td> -->
+                        </tr>
+                        <tr>
+                            <td colspan="2"> {{ self_song.ly_summary | safe() }}</td>
+                        </tr>
+                    </table>
+
+                    <div class="mt-5">
+                        <h2>취향에 맞는 노래를 찾아왔어요!</h2>
+                    </div>
+                    <table class="mt-3">
+                        
+                        <tr>
+                            {% for content in pro_contents %}
+                            <td class="text-center">
+                                <a href="https://www.melon.com/song/detail.htm?songId={{ content.songId }}" target="_blank">
+                                    <img src="{{ content.img }}" height="160">
+                                </a>
+                            </td>
+                            {% endfor %}
+                        </tr>
+                        
+                        <tr>
+                            {% for content in pro_contents %}
+                            <td class="text-center"> {{ content.title}}</td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for content in pro_contents %}
+                            <td class="text-center">{{ content.artist}}</td>
+                            {% endfor %}
+                        </tr>
+                        
+                    </table>
+                    <div class="mt-5">
+                        <h2>잘 알려지지 않았지만, 검색한 노래와 비슷한 노래에요!</h2>
+                    </div>
+                    <table class="mt-3">
+                        <tr>
+                            {% for meong in pro_meong %}
+                            <td class="text-center">
+                                <a href="https://www.melon.com/song/detail.htm?songId={{ meong.songId }}" target="_blank">
+                                    <img src="{{ meong.img }}" height="160">
+                                </a>
+                            </td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for meong in pro_meong %}
+                            <td class="text-center">{{ meong.title }}</td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for meong in pro_meong %}
+                            <td class="text-center">{{ meong.artist }}</td>
+                            {% endfor %}
+                        </tr>
+                    </table>
+                    <div class="mt-5">
+                        <h2>플레이리스트에 함께 들어있던 노래들이에요!</h2>
+                    </div>
+                    <table class="mt-3">
+                        <tr>
+                            {% for psong in pro_psongs %}
+                            <td class="text-center">
+                                <a href="https://www.melon.com/song/detail.htm?songId={{ psong.songId }}" target="_blank">
+                                    <img src="{{ psong.img }}" height="160">
+                                </a>
+                            </td>
+                           
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for psong in pro_psongs %}
+                            <td class="text-center">{{ psong.title }}</td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for psong in pro_psongs %}
+                            <td class="text-center">{{ psong.artist }}</td>
+                            {% endfor %}
+                        </tr>
+                    </table>
+                    <div class="mt-5">
+                        <h2> {{ pro_tags }}</h2>
+                    </div>
+                    <div class="row mt-5">
+                        <div class="col-4">
+                            <img src=" {{ pro_contents[0].img }}" height="360">
+                        </div>
+                        <div class="col-6 d-flex justify-content-end">
+                            <div style="height: 360px; width: 500px; overflow: auto;">
+                                <table class="table playlist table-hover">
+                                    {% for content in pro_contents %}
+                                    <tr>
+                                        <td><img src="{{ content.img }}" height="60"></td>
+                                        <td>{{content.title}}</td>
+                                        <td>{{content.artist}}</td>
+                                        <td><i class="fa-solid fa-heart"></i></td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% for meong in pro_meong %}
+                                    <tr>
+                                        <td><img src="{{meong.img}}" height="60"></td>
+                                        <td>{{meong.title}}</td>
+                                        <td>{{meong.artist}}</td>
+                                        <td><i class="fa-solid fa-heart"></i></td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% for psong in pro_psongs %}
+                                    <tr>
+                                        <td><img src="{{psong.img}}" height="60"></td>
+                                        <td>{{psong.title}}</td>
+                                        <td>{{psong.artist}}</td>
+                                        <td><i class="fa-solid fa-heart"></i></td>
+                                    </tr>
+                                    {% endfor %}
+                                    
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2"></div>
+            </div>
+        </div>      
+        <br><br>  
+    </body>    
+</html>
