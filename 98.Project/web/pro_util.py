@@ -3,6 +3,7 @@ import pandas as pd
 import os, re, string, joblib, json
 import requests
 from datetime import datetime
+import user_searched_dao
 
 ##########################################################
 # 현재 위치 알기
@@ -46,16 +47,16 @@ def get_weather(app):
 
     if weather_id == 800: 
         desc = '햇|드라이브'
-        img_name = 'drive2.jpg'
+        img_name = 'drive.jpg'
     elif 600 <= weather_id < 700:
         desc = '눈|겨울'
-        img_name = 'winter_snow2.jpg'
+        img_name = 'snow.jpg'
     elif weather_id > 800:
         desc = '흐|휴식'
-        img_name = 'cloud2.jpg'
+        img_name = 'cloud.jpg'
     else:
         desc = '비|센치'
-        img_name = 'rain2.jpg'
+        img_name = 'rain.jpg'
 
     return desc, img_name, html
 
@@ -69,12 +70,12 @@ def get_time():
     if 0 <= hour <= 6:
         desc = '새벽|감성'
         img_name = 'dawn.jpg'
-    elif 6 < hour <= 12:
+    elif 6 < hour < 12:
         desc = '출근|아이돌'
-        img_name = 'joody2.jpg'
-    elif 12 < hour < 18:
+        img_name = 'joody.jpg'
+    elif 12 <= hour < 18:
         desc = '오후|기분'
-        img_name = 'afternoon3.png'
+        img_name = 'afternoon.png'
     elif 18 <= hour <= 24:
         desc = '버스|지하철'
         img_name = 'bus.jpg'
@@ -159,7 +160,7 @@ def search_songs(key_title, key_artist, app):
 ##########################################################
 # propose : 해당 노래에 대해 여러가지로 추천
 ##########################################################
-def propose(find_songId, app):
+def propose(uid, find_songId, app):
 
     def get_recommendation(songId, cos_sim):
         index = indices[songId]
@@ -198,6 +199,14 @@ def propose(find_songId, app):
 
     # 3. 곡 정보 추가
     self_song = df[df.songId == find_songId][['title', 'artist', 'album', 'date', 'genre', 'img', 'ly_summary']].to_dict('records')[0]
+    
+    # 3 - 1. 검색한 기록 저장하기
+    if uid :
+        print('uid = ', uid)
+        now = datetime.now()
+        user_searched_dao.insert_user_record((uid, now.strftime('%Y-%m-%d %H:%M:%S'), 
+                                              find_songId, self_song['img'], self_song['title'], 
+                                              self_song['artist'], self_song['album'] ))
 
     # 4. 컨텐츠 기반 추천
     a = get_recommendation(find_songId, cosine_sim).to_frame()

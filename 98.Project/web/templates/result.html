@@ -61,7 +61,7 @@
                                     <tr>                           
                                         <td>
                                             <label class="radio-button-field-2 w-radio">
-                                                <input type="radio" data-name="Radio" id="radio-2" name="optradio" value="{{song.songId}}" class="w-form-formradioinput w-radio-input" />
+                                                <input type="radio" data-name="Radio" id="radio-2" name="optradio" value="{{song.songId}}" class="w-form-formradioinput w-radio-input" {% if loop.first %} checked {% endif %}/>
                                                 <span class="w-form-label" for="radio-2"></span>
                                             </label>
                                         </td>

@@ -5,7 +5,7 @@ def insert_user_record(params):
     conn = sq.connect('./static/DB/usearched.db')
     cur = conn.cursor()
 
-    sql = 'insert into user_searched(sid, uid, stime, songId, img, title, artist, album) values( ?, ?, ?, ?, ?, ?, ?, ?);'
+    sql = 'insert into user_searched(uid, stime, songId, img, title, artist, album) values( ?, ?, ?, ?, ?, ?, ?);'
     cur.execute(sql, params)
     conn.commit()
 
@@ -18,7 +18,7 @@ def get_user_by_search_record(uid):
     conn = sq.connect('./static/DB/usearched.db')
     cur = conn.cursor()
 
-    sql = 'select * from user_searched where uid=?;'
+    sql = 'select * from user_searched where uid=? ORDER BY sid DESC LIMIT 9;'
     cur.execute(sql, (uid,))
-    row = cur.fetchone()
-    return row
+    rows = cur.fetchall()
+    return rows

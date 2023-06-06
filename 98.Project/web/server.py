@@ -1,6 +1,6 @@
 from flask import Flask , render_template, request, session, flash, redirect
 import pro_util as bbb
-import user_dao
+import user_dao, user_searched_dao
 import hashlib, base64, json
 
 app = Flask(__name__)
@@ -26,15 +26,38 @@ def first():
 
         return render_template('result.html', songs=songs)
 
-
 @app.route('/result', methods=['GET', 'POST'])
 def result():
+
     if request.method == 'POST':
 
-        songId = request.form['optradio']
-        pro_tags, self_song, pro_contents, pro_meong, pro_psongs = bbb.propose(songId, app)
+        try:
+            songId = request.form['optradio']
+        except:
+            return render_template('final.html', pro_tags='', self_song=[], pro_contents=[], pro_meong=[], pro_psongs=[])
+
+        if 'uid' in session : 
+            uid = session['uid']
+        else:
+            uid = ''
+
+        pro_tags, self_song, pro_contents, pro_meong, pro_psongs = bbb.propose(uid, songId, app)
 
         return render_template('final.html', pro_tags=pro_tags, self_song=self_song, pro_contents=pro_contents, pro_meong=pro_meong, pro_psongs=pro_psongs)
+    else:
+    
+        return "잘못된 접근 방식입니다."
+
+
+@app.route('/my_result/<songId>')
+def my_result(songId):
+
+    if songId == '' :
+        return "잘못된 접근 방식입니다."
+
+    pro_tags, self_song, pro_contents, pro_meong, pro_psongs = bbb.propose('', songId, app)
+
+    return render_template('final.html', pro_tags=pro_tags, self_song=self_song, pro_contents=pro_contents, pro_meong=pro_meong, pro_psongs=pro_psongs)
 
 
 @app.route('/weather_time/<int:kind>')
@@ -47,38 +70,45 @@ def weather_time(kind):
 
 @app.route('/login_check', methods=['POST']) 
 def login_check():
-    uid = request.form['uid']
-    pwd = request.form['pwd']
 
-    user_info = user_dao.get_user_by_info(uid)
-    if user_info :
-        db_pwd = user_info[2]
+    if request.method == 'POST':
+        uid = request.form['uid']
+        pwd = request.form['pwd']
 
-        pwd_sha256 = hashlib.sha256(pwd.encode())
-        hased_pwd = base64.b64encode(pwd_sha256.digest()).decode('utf-8')
-        if hased_pwd == db_pwd:   
-            return "1"
+        user_info = user_dao.get_user_by_info(uid)
+        if user_info :
+            db_pwd = user_info[2]
+
+            pwd_sha256 = hashlib.sha256(pwd.encode())
+            hased_pwd = base64.b64encode(pwd_sha256.digest()).decode('utf-8')
+            if hased_pwd == db_pwd:   
+                return "1"
+            else:
+                return "-1"
         else:
-            return "-1"
+            return "0"
     else:
-        return "0"
-    
+        return "잘못된 접근입니다."
+
 @app.route('/uid_check', methods=['POST']) 
 def uid_check():
 
-    uid = request.form['uid']
-    user_info = user_dao.get_user_by_uid(uid)
-
-    if user_info:
+    if request.method == 'POST':
+        uid = request.form['uid']
+        user_info = user_dao.get_user_by_uid(uid)
+        # print(user_info)
+        if user_info:
+            return "1"
         return "0"
-
-    return "1"
+    else:
+        return "잘못된 접근입니다."
 
 
 @app.route('/login', methods=['GET', 'POST']) 
 def login():
-    if request.method == 'GET':
 
+    if request.method == 'GET':
+        
         return render_template('login.html')
 
     else:
@@ -100,7 +130,9 @@ def login():
                 flash(f'{user_info[1]}님 환영합니다.', category="info")   # 초기 화면으로 보내줌
                 session['uid'] = uid                   # 세션값을 설정함으로써 사용자가 로그인하였음을 알게 함
                 session['uname'] = user_info[1]
-                session['email'] = user_info[3]
+                session['birthday'] = user_info[3]
+                session['gender'] = user_info[4]
+                session['email'] = user_info[5]
                 return redirect('/first')
             else:
                 flash('비밀번호가 틀립니다.', category="error")   # 로그인 화면을 다시 보내줌
@@ -112,15 +144,14 @@ def login():
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    print('signup')
+    # print('signup')
     if request.method == 'GET':
 
         return render_template('signup.html')
 
     else:
-        print('signup1')
+
         uid = request.form['uid']
-        print('signup2', uid)
 
         if user_dao.get_user_by_uid(uid) :
             flash('이미 사용자 ID가 있습니다. 다른 ID를 이용하세요.')
@@ -129,56 +160,56 @@ def signup():
         pwd = request.form['pwd']
         pwd2 = request.form['pwd2']
 
-        print('signup3')
-
         if pwd != pwd2 :
             flash('패스워드가 일치하지 않습니다.')
             return redirect('/signup')
-        
-        print('signup4')
+
         uname = request.form['uname']
         email = request.form['email']
-        gender = int(request.form['gender'])
-        email = request.form['email']
-        birthday = request.form['birthday']
-        print('signup5')
-
-        pwd_sha256 = hashlib.sha256(pwd.encode())
-        hased_pwd = base64.b64encode(pwd_sha256.digest()).decode('utf-8')
-
-        print(uid, uname, email, gender, birthday)
-        user_dao.insert_user((uid, uname, hased_pwd, gender, email, birthday))
-
-        session['uid'] = uid
-        session['uname'] = uname
-        session['email'] = email
-
-        return redirect('/first')
-
-@app.route('/user_update', methods=['GET', 'POST'])
-def user_update():
-    
-    if request.method == 'GET':
-        return render_template('user_update.html')
-    else:
-
-        pwd = request.form['pwd']
-        pwd2 = request.form['pwd2']
-        if pwd != pwd2 :
-            flash('패스워드가 일치하지 않습니다.')
-            return redirect('/user_update')
-        
-        uname = request.form['uname']
         gender = request.form['gender']
         email = request.form['email']
         birthday = request.form['birthday']
 
         pwd_sha256 = hashlib.sha256(pwd.encode())
         hased_pwd = base64.b64encode(pwd_sha256.digest()).decode('utf-8')
-        user_dao.update_user((uname, hased_pwd, gender, email, birthday, session['uid']))
+
+        user_dao.insert_user((uid, uname, hased_pwd, int(gender), email, birthday))
+
+        session['uid'] = uid
+        session['uname'] = uname
+        session['gender'] = gender
+        session['email'] = email
+        session['birthday'] = birthday
+
+        return redirect('/first')
+
+@app.route('/update', methods=['GET', 'POST'])
+def update():
+    
+    if request.method == 'GET':
+        return render_template('update.html')
+    else:
+
+        pwd = request.form['pwd']
+        pwd2 = request.form['pwd2']
+        if pwd != pwd2 :
+            flash('패스워드가 일치하지 않습니다.')
+            return redirect('/update')
+        
+        uname = request.form['uname']
+        gender = request.form['gender']
+        email = request.form['email']
+        birthday = request.form['birthday']
+        print('gender ', gender)
+
+        pwd_sha256 = hashlib.sha256(pwd.encode())
+        hased_pwd = base64.b64encode(pwd_sha256.digest()).decode('utf-8')
+        user_dao.update_user((uname, hased_pwd, int(gender), email, birthday, session['uid']))
 
         session['uname'] = uname
+        session['gender'] = gender
         session['email'] = email
+        session['birthday'] = birthday
 
         return redirect('/first')
 
@@ -186,19 +217,25 @@ def user_update():
 @app.route('/user_delete/<uid>')
 def user_delete(uid):
     user_dao.delete_user(uid)
-    session.pop('uid', None) 
-    session.pop('uname', None)
-    session.pop('email', None)
+    session.clear()
     return redirect('/first')
 
 
 @app.route('/logout')
 def logout():
-    session.pop('uid', None) 
-    session.pop('uname', None)
-    session.pop('email', None)
-
+    session.clear()
     return redirect('/first')
+
+@app.route('/mypage')
+def mypage():
+
+    if 'uid' in session:
+        uid = session['uid']
+    else:
+        return "잘못된 접근 방법입니다."
+
+    songs = user_searched_dao.get_user_by_search_record(uid)
+    return render_template('mypage.html', songs=songs)
 
 if __name__ == '__main__': 
     app.run(debug=False)

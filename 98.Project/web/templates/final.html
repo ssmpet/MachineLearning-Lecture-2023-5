@@ -62,6 +62,7 @@
                     </div>
                     <div data-w-id="870a62f8-ee2f-2c97-b631-ffd1aa117450" style="opacity:0" class="_18">
                         <div class="div-block-17">
+                            {% if self_song %}
                             <div><img src="{{self_song.img}}" loading="lazy" height="300" width="300" class="image-5" /></div>
                             <div class="div-block-12">
                                 <h1 class="heading-4">
@@ -86,6 +87,7 @@
                                     <img src="https://uploads-ssl.webflow.com/6477541a17691ab179063414/6477541a17691ab179063673_%EA%B7%B8%EB%A6%BC7.png" loading="lazy" width="40" height="30"/>
                                 </div>
                             </div>
+                            {% endif %}
                         </div>
                         <div class="div-block-31"><a href="#contents" class="button-4 w-button">CLICK &gt;</a></div>
                     </div>
@@ -145,7 +147,9 @@
                 <div class="div-block-26"><h1 class="heading-5">{{pro_tags}}</h1></div>
                 <div class="div-block-27">
                     <div class="div-block-28">
+                        {% if self_song %}
                         <div class="div-block-30"><img src="{{self_song.img}}" loading="lazy" width="400" height="400" class="image-8" /></div>
+                        {% endif %}
                         <div class="div-block-23">
                             <table>
                                 {% for pro_content in pro_contents %}
