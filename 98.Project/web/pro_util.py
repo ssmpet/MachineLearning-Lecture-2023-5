@@ -202,7 +202,7 @@ def propose(uid, find_songId, app):
     
     # 3 - 1. 검색한 기록 저장하기
     if uid :
-        print('uid = ', uid)
+        # print('uid = ', uid)
         now = datetime.now()
         user_searched_dao.insert_user_record((uid, now.strftime('%Y-%m-%d %H:%M:%S'), 
                                               find_songId, self_song['img'], self_song['title'], 

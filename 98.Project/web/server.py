@@ -88,7 +88,7 @@ def login_check():
         else:
             return "0"
     else:
-        return "잘못된 접근입니다."
+        return "잘못된 접근 방식입니다."
 
 @app.route('/uid_check', methods=['POST']) 
 def uid_check():
@@ -101,7 +101,7 @@ def uid_check():
             return "1"
         return "0"
     else:
-        return "잘못된 접근입니다."
+        return "잘못된 접근 방식입니다."
 
 
 @app.route('/login', methods=['GET', 'POST']) 
@@ -200,7 +200,6 @@ def update():
         gender = request.form['gender']
         email = request.form['email']
         birthday = request.form['birthday']
-        print('gender ', gender)
 
         pwd_sha256 = hashlib.sha256(pwd.encode())
         hased_pwd = base64.b64encode(pwd_sha256.digest()).decode('utf-8')
@@ -232,7 +231,7 @@ def mypage():
     if 'uid' in session:
         uid = session['uid']
     else:
-        return "잘못된 접근 방법입니다."
+        return "잘못된 접근 방식입니다."
 
     songs = user_searched_dao.get_user_by_search_record(uid)
     return render_template('mypage.html', songs=songs)
