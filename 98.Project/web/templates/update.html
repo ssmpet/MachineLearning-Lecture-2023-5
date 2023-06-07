@@ -15,6 +15,12 @@
         <link href="https://uploads-ssl.webflow.com/63fc43570e70bd27006a038e/63fc43580e70bd2a7a6a03bc_Favicon%20256.png" rel="apple-touch-icon" />
         <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
         <script>
+            function delete_confirm(){
+                if (confirm('정말로 탈퇴하시겠습니까?') ){
+                    window.location.replace("/user_delete/{{session['uid']}}")           
+                }
+            };
+
             function checkPw(pwd) {
 
                 if (pwd == '') {
@@ -152,6 +158,7 @@
                                                 </label>
                                             </div>
                                             <input type="button" value="SUBMIT" data-wait="Please wait..." class="submit-button w-button" onclick="isCheck();"/>
+                                            <!-- <input type="button" value="회원탈퇴" data-wait="Please wait..." class="submit-button w-button" onclick="isOut();"/> -->
                                             <!-- <input type="submit" value="SUBMIT" data-wait="Please wait..." class="submit-button w-button" /> -->
                                         </form>
                                     </div>
@@ -169,6 +176,7 @@
                                 {% if session['uid']  %}
                                 <a href="/logout" class="footer-link-three">Logout</a>
                                 <a href="/update" class="footer-link-three">회원정보 수정</a>
+                                <a href="#" class="footer-link-three" onclick="delete_confirm()">회원탈퇴</a>
                                 {% endif %}
                             </div>
                             <div class="footer-social-block-three">

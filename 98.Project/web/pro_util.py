@@ -114,7 +114,7 @@ def get_weather_time(app, kind=0):
     songs = pd.DataFrame()
 
     for s_id in choice_songs:    
-        tmp = df[df.songId.isin([s_id])][['songId', 'title', 'artist', 'img']]
+        tmp = df[df.songId.isin([s_id])][['songId', 'title', 'artist', 'img', 'album']]
 
         if not tmp.empty : # df에 있으면 추가
             cnt += 1
@@ -198,7 +198,7 @@ def propose(uid, find_songId, app):
     indices = pd.Series(df.index, index=df.songId)
 
     # 3. 곡 정보 추가
-    self_song = df[df.songId == find_songId][['title', 'artist', 'album', 'date', 'genre', 'img', 'ly_summary']].to_dict('records')[0]
+    self_song = df[df.songId == find_songId][['songId', 'title', 'artist', 'album', 'date', 'genre', 'img', 'ly_summary']].to_dict('records')[0]
     
     # 3 - 1. 검색한 기록 저장하기
     if uid :

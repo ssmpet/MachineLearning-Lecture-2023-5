@@ -71,7 +71,7 @@
                             <table>
                                 {% for song in songs %}
                                 <tr>
-                                    <td><img src="{{song.img}}" loading="lazy" width="60" height="60" /></td>
+                                    <td><a href="https://www.melon.com/song/detail.htm?songId={{song.songId}}" target="_blank"><img src="{{song.img}}" loading="lazy" width="60" height="60" /></a></td>
                                     <td>{{song.title}}</td>
                                     <td>{{song.artist}}</td>
                                     <td>{{song.album}}</td>

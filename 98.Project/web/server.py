@@ -238,4 +238,4 @@ def mypage():
     return render_template('mypage.html', songs=songs)
 
 if __name__ == '__main__': 
-    app.run(debug=False)
+    app.run(debug=True)

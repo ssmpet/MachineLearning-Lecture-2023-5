@@ -63,7 +63,7 @@
                     <div data-w-id="870a62f8-ee2f-2c97-b631-ffd1aa117450" style="opacity:0" class="_18">
                         <div class="div-block-17">
                             {% if self_song %}
-                            <div><img src="{{self_song.img}}" loading="lazy" height="300" width="300" class="image-5" /></div>
+                            <div><a href="https://www.melon.com/song/detail.htm?songId={{self_song.songId}}" target="_blank"><img src="{{self_song.img}}" loading="lazy" height="300" width="300" class="image-5" /></a></div>
                             <div class="div-block-12">
                                 <h1 class="heading-4">
                                     <strong class="bold-text-3">{{self_song.title}}<br /></strong>
@@ -100,7 +100,7 @@
                     <div data-w-id="474f526b-d2ba-a3ec-88c2-f664d4492c8c" style="opacity:0" class="div-block-18">
                         {% for pro_content in pro_contents %}
                         <div class="div-block-8">
-                            <img src="{{pro_content.img}}" loading="lazy" width="160" />
+                            <a href="https://www.melon.com/song/detail.htm?songId={{pro_content.songId}}" target="_blank"><img src="{{pro_content.img}}" loading="lazy" width="160" /></a>
                             <div style="margin: 10px;"><strong>{{pro_content.title}}</strong></div>
                             <div>{{pro_content.artist}}</div>
                         </div>
@@ -116,7 +116,7 @@
                     <div data-w-id="87feaf40-b16d-37db-8f74-31af13657c5c" style="opacity:0" class="div-block-18">
                         {% for meong in pro_meong %}
                         <div class="div-block-8">
-                            <img src="{{meong.img}}" loading="lazy" width="160" />
+                            <a href="https://www.melon.com/song/detail.htm?songId={{meong.songId}}" target="_blank"><img src="{{meong.img}}" loading="lazy" width="160" /></a>
                             <div style="margin: 10px;"><strong>{{meong.title}}</div></strong>
                             <div>{{meong.artist}}</div>
                         </div>
@@ -127,24 +127,38 @@
                 <section id="play" class="play-section wf-section">
                     <div data-w-id="1cf20e68-ada6-f0c4-8329-14e2affcf96f" style="opacity:0" class="div-block-20">
                         <img src="https://uploads-ssl.webflow.com/6477541a17691ab179063414/6477541a17691ab17906367b_%EA%B7%B8%EB%A6%BC16.png" loading="lazy" width="50" class="image-4" />
-                        <h2 class="heading-2">플레이리스트에 함께 들어있던 노래들이에요!</h2>
+                        
+                            {% if pro_psongs %}
+                            <h2 class="heading-2"> 플레이리스트에 함께 들어있던 노래들이에요!</h2>
+                            {% else %}
+                            <h2 class="heading-2"> 생성된 플레이리스트가 없어요. <i class="fa-regular fa-face-sad-tear"></i></h2><br>
+                            <h2 class="heading-2"> WEATHER나 TIME의 플레이리스트를 추천해 드릴게요!</h2>
+                            {% endif %}
+                        
                     </div>
                     <div data-w-id="09d6cdbf-d4e2-7640-4a3f-11817089a397" style="opacity:0" class="div-block-18">
                         {% for psongs in pro_psongs %}
                         <div class="div-block-8">
-                            <img src="{{psongs.img}}" loading="lazy" width="160" />
+                            <a href="https://www.melon.com/song/detail.htm?songId={{psongs.songId}}" target="_blank"><img src="{{psongs.img}}" loading="lazy" width="160" /></a>
                             <div style="margin: 10px;"><strong>{{psongs.title}}</div></strong>
                             <div>{{psongs.artist}}</div>
                         </div>
                         {% endfor %}
-                        <div class="div-block-21"><a href="#list" class="button-3 w-button">NEXT &gt;</a></div>
+                        <div class="div-block-21">
+                            {% if pro_psongs %}
+                            {% else %}
+                            <a href="weather_time/0" class="button-3 w-button">WEATHER <i class="fa-solid fa-headphones-simple"></i></a>
+                            <a href="weather_time/1" class="button-3 w-button">TIME <i class="fa-solid fa-headphones-simple"></i></a>
+                            {% endif %}
+                            <a href="#list" class="button-3 w-button">NEXT &gt;</a>
+                        </div>
                     </div>
                 </section>
             </div>
         </div>
         <section id="list" class="list-section wf-section">
             <div data-w-id="d56fbba5-9ffe-ad7d-0e5e-06923c8462b1" style="opacity:0" class="div-block-22">
-                <div class="div-block-26"><h1 class="heading-5">{{pro_tags}}</h1></div>
+                <div class="div-block-26"><h1 class="heading-5">{% if pro_tags %}{{pro_tags}}{% else %} #{{ self_song.genre }}{% endif %}</h1></div>
                 <div class="div-block-27">
                     <div class="div-block-28">
                         {% if self_song %}
@@ -154,7 +168,8 @@
                             <table>
                                 {% for pro_content in pro_contents %}
                                 <tr>
-                                    <td><img src="{{pro_content.img}}" loading="lazy" width="60" height="60" /></td>
+                                    <td>
+                                        <a href="https://www.melon.com/song/detail.htm?songId={{pro_content.songId}}" target="_blank"><img src="{{pro_content.img}}" loading="lazy" width="60" height="60" /></a></td>
                                     <td>{{pro_content.title}}</td>
                                     <td>{{pro_content.artist}}</td>
                                     <td>{{pro_content.album}}</td>
@@ -163,7 +178,7 @@
                                 {% endfor %}
                                 {% for meong in pro_meong %}
                                 <tr>
-                                    <td><img src="{{meong.img}}" loading="lazy" width="60" height="60" /></td>
+                                    <td><a href="https://www.melon.com/song/detail.htm?songId={{meong.songId}}" target="_blank"><img src="{{meong.img}}" loading="lazy" width="60" height="60" /></a></td>
                                     <td>{{meong.title}}</td>
                                     <td>{{meong.artist}}</td>
                                     <td>{{meong.album}}</td>
@@ -172,7 +187,7 @@
                                 {% endfor %}
                                 {% for psongs in pro_psongs %}
                                 <tr>
-                                    <td><img src="{{psongs.img}}" loading="lazy" width="60" height="60" /></td>
+                                    <td><a href="https://www.melon.com/song/detail.htm?songId={{psongs.songId}}" target="_blank"><img src="{{psongs.img}}" loading="lazy" width="60" height="60" /></a></td>
                                     <td>{{psongs.title}}</td>
                                     <td>{{psongs.artist}}</td>
                                     <td>{{psongs.album}}</td>
