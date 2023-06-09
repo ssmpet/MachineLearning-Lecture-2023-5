@@ -26,6 +26,21 @@
                 </script>
             {% endif %}
         {% endwith %}
+        <script>
+            function ischeck() {
+                let artist = $('#artist').val();
+                let title= $('#title').val();
+
+                if(artist == "" & title == "" ){
+                    alert("검색할 가수나 제목을 입력해 주세요."); 
+                    $('#artist').focus();
+                    return;
+                } 
+
+                $('#search_form').submit();
+
+            }
+        </script>
     </head>
     <body class="body">
         <div class="page-wrapper">
@@ -78,10 +93,11 @@
                     </div>
                     <div>
                         <div data-w-id="dae3808c-7c51-b3fb-13b9-dc6de93d3db9" style="opacity:0" class="form-block-2 w-form">
-                            <form action="first" method="post" class="form-3">
+                            <form action="first" method="post" class="form-3" id="search_form">
                                 <input type="text" class="text-field-4 w-input" maxlength="256" name="artist" placeholder="Artist" id="artist" />
                                 <input type="text" class="text-field-5 w-input" maxlength="256" name="title" placeholder="Title" id="title" />
-                                <input type="submit" value="NEXT &gt;" data-wait="Please wait..." class="submit-button-2 w-button" />
+                                <input type="button" value="NEXT &gt;" data-wait="Please wait..." class="submit-button-2 w-button" onclick="ischeck()" />
+                                <!-- <input type="submit" value="NEXT &gt;" data-wait="Please wait..." class="submit-button-2 w-button" /> -->
                             </form>
                         </div>
                     </div>

@@ -216,6 +216,7 @@ def update():
 @app.route('/user_delete/<uid>')
 def user_delete(uid):
     user_dao.delete_user(uid)
+    user_searched_dao.delete_user(uid)
     session.clear()
     return redirect('/first')
 
@@ -237,4 +238,4 @@ def mypage():
     return render_template('mypage.html', songs=songs)
 
 if __name__ == '__main__': 
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')

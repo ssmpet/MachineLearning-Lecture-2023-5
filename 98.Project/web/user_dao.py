@@ -61,7 +61,7 @@ def update_user(params):
     conn.close()
 
 
-# 탈퇴
+# 개인 이력 삭제
 def delete_user(uid):
     conn = sq.connect('./static/db/userinfo.db')
     cur = conn.cursor()
