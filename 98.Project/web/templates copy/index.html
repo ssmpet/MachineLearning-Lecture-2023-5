@@ -18,6 +18,7 @@
         <link href="https://uploads-ssl.webflow.com/63fc43570e70bd27006a038e/63fc43580e70bd5fc96a03bb_Favicon%2032.png" rel="shortcut icon" type="image/x-icon" />
         <link href="https://uploads-ssl.webflow.com/63fc43570e70bd27006a038e/63fc43580e70bd2a7a6a03bc_Favicon%20256.png" rel="apple-touch-icon" />
         
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
         {% with messages = get_flashed_messages() %}
             {% if messages %}
                 <script>
@@ -58,12 +59,11 @@
                                         <li><a href="/weather_time/1" class="nav-link">Time</a></li>
                                         {% if session['uid'] %}
                                             <li><a href="/logout" class="nav-link">Logout</a></li>
-                                            <li><a href="/mypage" class="nav-link">My Page</a></li>
+                                            <li><a href="/mypage" class="nav-link">My page</a></li>
                                         {% else %}
                                             <li><a href="/login" class="nav-link">Login</a></li>
                                             <li><a href="/signup" class="nav-link">Sign up</a></li>
                                         {% endif %}
-
                                     </ul>
                                 </nav>
                                 <div class="menu-button w-nav-button">
