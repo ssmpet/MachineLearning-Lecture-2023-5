@@ -13,7 +13,7 @@ def index():
 @app.route('/best_psong')
 def best_psong():
     
-    filename = os.path.join(app.static_folder, 'data/best_song.csv')
+    filename = os.path.join(app.static_folder, 'data/best_song2.csv')
 
     df = pd.read_csv(filename)
     df.songId = df.songId.astype(str)
