@@ -228,7 +228,7 @@ def propose(uid, find_songId, app):
 
     # 7. 플레이리스트 추천
     # 1) 가장 많이 들어간 tag 찾기
-    tags = np.unique(' '.join(plist1[plist1.songIds.str.contains(find_songId)]['tag'].values).split(), return_counts=True)
+    tags = np.unique(' '.join(plist1[(plist1.songIds + ' ').str.contains(find_songId + ' ')]['tag'].values).split(), return_counts=True)
 
     # argsort : 값이 큰 순서대로 값의 인덱스 정렬 -1 큰 순서대로
     if len(tags[0]) :
@@ -244,7 +244,7 @@ def propose(uid, find_songId, app):
 
     # 2) 가장 많이 들어가 songId 찾기
     # 자기 자신은 제외
-    songs = np.unique(' '.join(plist1[plist1.songIds.str.contains(find_songId)]['songIds'].values).replace(find_songId + ' ', '').split(), return_counts=True)
+    songs = np.unique(' '.join(plist1[(plist1.songIds + ' ').str.contains(find_songId + ' ')]['songIds'].values).replace(find_songId + ' ', '').split(), return_counts=True)
 
     cnt = 0
     pro_psongs = pd.DataFrame()
